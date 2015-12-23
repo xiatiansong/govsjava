@@ -29,22 +29,36 @@ func main() {
 
 	timestamp1 := time.Now().Unix()
 	fmt.Println(timestamp1)
-	//循环发送50万次请求
-	for i := 0; i < 500000; i++ {
-		_, err = conn.Write([]byte("QOTM?"))
-		if err != nil {
-			fmt.Println("failed:", err)
-			os.Exit(1)
-		}
-		data := make([]byte, 4)
-		_, err = conn.Read(data)
-		if err != nil {
-			fmt.Println("failed to read UDP msg because of ", err)
-			os.Exit(1)
-		}
-		_ = binary.BigEndian.Uint32(data)
-		//fmt.Println(time.Unix(int64(t), 0).String())
+
+	flags := make(chan bool, 10)
+
+	for index := 0; index < 10; index++ {
+		go func() {
+			//循环发送50万次请求
+			for i := 0; i < 500000; i++ {
+				_, err = conn.Write([]byte("QOTM?"))
+				if err != nil {
+					fmt.Println("failed:", err)
+					os.Exit(1)
+				}
+				data := make([]byte, 4)
+				_, err = conn.Read(data)
+				if err != nil {
+					fmt.Println("failed to read UDP msg because of ", err)
+					os.Exit(1)
+				}
+				_ = binary.BigEndian.Uint32(data)
+				//fmt.Println(time.Unix(int64(t), 0).String())
+			}
+			flags <- true
+
+		}()
+
 	}
+	for index := 0; index < 10; index++ {
+		<-flags
+	}
+
 	timestamp2 := time.Now().Unix()
 	fmt.Println(timestamp2 - timestamp1)
 	fmt.Println(timestamp2)
