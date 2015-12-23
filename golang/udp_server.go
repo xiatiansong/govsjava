@@ -32,13 +32,13 @@ func main() {
 }
 func handleClient(conn *net.UDPConn) {
 	data := make([]byte, 1024)
-	n, remoteAddr, err := conn.ReadFromUDP(data)
+	_, remoteAddr, err := conn.ReadFromUDP(data)
 	if err != nil {
 		fmt.Println("failed to read UDP msg because of ", err.Error())
 		return
 	}
 	daytime := time.Now().Unix()
-	fmt.Println(n, remoteAddr)
+	//fmt.Println(n, remoteAddr)
 	b := make([]byte, 4)
 	binary.BigEndian.PutUint32(b, uint32(daytime))
 	conn.WriteToUDP(b, remoteAddr)

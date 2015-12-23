@@ -25,11 +25,11 @@ public class JettyHttpServer {
 		server.setThreadPool(threadPool);
 
 		Connector connector = new SelectChannelConnector();
-		connector.setPort(8080);
+		connector.setPort(8081);
 		server.setConnectors(new Connector[] { connector });
 
 		ContextHandler context = new ContextHandler();
-		context.setContextPath("/t");
+		context.setContextPath("/rwer");
 		context.setResourceBase(".");
 		context.setClassLoader(Thread.currentThread().getContextClassLoader());
 		server.setHandler(context);
